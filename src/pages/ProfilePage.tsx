@@ -1,7 +1,11 @@
+import UserReservationsTabs from "../components/profile/UserReservationsTabs";
+
 export default function ProfilePage() {
-  return (
-    <div>
-      <h2>Profile Page</h2>
-    </div>
-  );
+
+    return (
+        <>
+            <h1 className="text-3xl font-bold mb-7">John Doe</h1>
+            <UserReservationsTabs/>
+        </>
+    );
 }

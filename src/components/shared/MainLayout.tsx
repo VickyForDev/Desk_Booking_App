@@ -5,7 +5,7 @@ export default function MainLayout() {
   return(
     <>
         <TopNavBar/>
-        <main>
+        <main className="p-5 max-w-300 mx-auto">
             <Outlet/>
         </main>
     </>

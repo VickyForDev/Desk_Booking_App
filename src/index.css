@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-main-orange: #e95a21;
-  --color-main-purple: #0f2940;
+    --color-main-orange: var(--main-orange);
+    --color-main-purple: var(--main-purple);
+
+}
+
+:root{
+    --medium-icon: 38px;
+    --small-icon: 30px;
+    --main-orange: #e95a21;
+    --main-purple: #0f2940;
 }
 
 body{
     margin:0;
     font-family:system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;
+    color: var(--color-main-purple);
 }
