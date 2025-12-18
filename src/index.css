@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-main-orange: #e95a21;
+  --color-main-purple: #0f2940;
+}
+
+body{
+    margin:0;
+    font-family:system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;
+}
