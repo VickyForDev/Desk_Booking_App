@@ -5,6 +5,11 @@ import { Link, NavLink } from 'react-router-dom';
 import { PATHS } from '../../pages/routes/paths';
 
 export default function TopNavBar() {
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+  };
+
   return (
     <nav className="bg-main-purple py-4 px-6 text-white flex justify-between items-center gap-6 sticky top-0 z-10">
       <Link to={PATHS.HOME} className="flex items-center gap-3">
@@ -17,7 +22,7 @@ export default function TopNavBar() {
             <AccountCircleTwoToneIcon sx={{fontSize: 'var(--medium-icon)'}} />
         </NavLink>
 
-        <NavLink to={PATHS.LOGIN} className=" hover:text-main-orange">
+        <NavLink to={PATHS.LOGIN} onClick={handleLogout} className=" hover:text-main-orange">
             <LogoutTwoToneIcon sx={{fontSize: 'var(--small-icon)'}} />
         </NavLink>
       </div>

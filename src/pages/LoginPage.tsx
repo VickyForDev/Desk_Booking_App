@@ -1,61 +1,92 @@
-import { useEffect, useState } from "react";
-import DeskTwoToneIcon from '@mui/icons-material/DeskTwoTone';
-
-const MOCK_USERS = [
-  { id: 1, firstName: "John", lastName: "Doe" },
-  { id: 2, firstName: "Jane", lastName: "Smith" },
-  { id: 3, firstName: "Alice", lastName: "Johnson" },
-];
+import { useState } from "react";
+import DeskTwoToneIcon from "@mui/icons-material/DeskTwoTone";
+import { useQuery } from "@tanstack/react-query";
+import { BOOKING_API_BASE_URL } from "../settings/deskBookingAPI";
+import type { User } from "../dataTypes/UserTypes";
+import { PATHS } from "./routes/paths";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-    const [users, setUsers] = useState(MOCK_USERS);
-    const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const navigate = useNavigate();
 
-    const handleLogin = () => {
-        // const user = users.find(u => u.id === Number(selectedUserId));
-        // if (user) {
-        //   onLogin(user);
-        // }
-    };
+  const {
+    isPending,
+    isError,
+    error,
+    data: users,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await fetch(`${BOOKING_API_BASE_URL}/users`);
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="w-[95%] max-w-sm bg-white rounded-xl shadow-md p-6 text-main-purple">
+      if (!res.ok) {
+        throw new Error("Failed to fetch users");
+      }
 
-                <div className="flex items-center gap-3 justify-center mb-4">
-                    <DeskTwoToneIcon sx={{fontSize: 55}} className="text-main-orange" />
-                    <h1 className="font-bold text-2xl">BookMyDesk</h1>
-                </div>
+      return res.json();
+    },
+  });
 
-                <h2 className="text-xl font-semibold mb-4 text-center">
-                    Select User
-                </h2>
+  const handleLogin = () => {
+    if (!selectedUserId) return;
 
-                <select
-                    value={selectedUserId}
-                    onChange={e => setSelectedUserId(e.target.value)}
-                    className="w-full border border-main-orange/40 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-main-orange"
-                >
-                    <option value="">-- Choose user --</option>
-                    {users.map(user => (
-                        <option key={user.id} value={user.id}>
-                            {user.firstName} {user.lastName}
-                        </option>
-                    ))}
-                </select>
+    localStorage.setItem("userId", selectedUserId);
+    navigate(PATHS.HOME);
+  };
 
-                <button
-                    onClick={handleLogin}
-                    disabled={!selectedUserId}
-                    className="w-full bg-main-orange text-white py-2 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 transition"
-                >
-                    Login
-                </button>
-
-                <p className="text-xs text-gray-500 text-center mt-4">
-                    Authentication is simulated for demo purposes
-                </p>
-            </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="w-[95%] max-w-sm bg-white rounded-xl shadow-md p-6 text-main-purple">
+        <div className="flex items-center gap-3 justify-center mb-4">
+          <DeskTwoToneIcon sx={{ fontSize: 55 }} className="text-main-orange" />
+          <h1 className="font-bold text-2xl">BookMyDesk</h1>
         </div>
-    );
+
+        <h2 className="text-xl font-semibold mb-4 text-center">Select User</h2>
+
+        {isError && (
+          <p className="text-xs text-red-500 mt-1">
+            {(error as Error).message}
+          </p>
+        )}
+
+        <select
+          value={selectedUserId}
+          onChange={(e) => setSelectedUserId(e.target.value)}
+          disabled={isPending}
+          className={`
+                        w-full rounded-lg px-3 py-2 mb-1
+                        border border-main-orange/40
+                        focus:outline-none focus:ring-2 focus:ring-main-orange
+                        disabled:bg-gray-100 disabled:cursor-not-allowed
+                    `}
+        >
+          <option value="">
+            {isPending ? "Loading users..." : "-- Choose user --"}
+          </option>
+          {!isPending &&
+            users?.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.firstName} {user.lastName}
+              </option>
+            ))}
+        </select>
+
+        <button
+          onClick={handleLogin}
+          disabled={!selectedUserId || isPending || isError}
+          className="w-full bg-main-orange text-white py-2 mt-2
+                        rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed 
+                        hover:bg-orange-600 transition cursor-pointer"
+        >
+          Login
+        </button>
+
+        <p className="text-xs text-gray-500 text-center mt-4">
+          Authentication is simulated for demo purposes
+        </p>
+      </div>
+    </div>
+  );
 }
