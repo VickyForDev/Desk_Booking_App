@@ -10,9 +10,8 @@ import {
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { BOOKING_API_BASE_URL } from "../../settings/deskBookingAPI";
 import FullScreenLoader from "../shared/FullScreenLoader";
-import axios from "axios";
+import { api } from "../../api/deskBookingAPI";
 
 interface CancelationDialogProps {
   open: boolean;
@@ -40,11 +39,11 @@ export default function CancelationDialog({
     error,
   } = useMutation({
     mutationFn: async () => {
-      const body = forThisDay ? { date } : {};
+      const body = forThisDay ? { date } : null;
 
       try {
-        const res = await axios.post(
-          `${BOOKING_API_BASE_URL}/desks/${deskId}/reservations/${reservationId}/cancel`,
+        const res = await api.post(
+          `/desks/${deskId}/reservations/${reservationId}/cancel`,
           body
         );
         return res.data;

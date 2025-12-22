@@ -3,16 +3,18 @@ import type { DateRange } from "../../dataTypes/DateTypes";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 type DateRangePickerProps = {
   value: DateRange;
   onChange: (value: DateRange) => void;
+  disabled?: (day: Dayjs) => boolean;
 };
 
 export default function DateRangePicker({
   value,
   onChange,
+  disabled,
 }: DateRangePickerProps) {
   const fromValue = dayjs(value.from);
   const toValue = dayjs(value.to);
@@ -24,6 +26,7 @@ export default function DateRangePicker({
           label="From"
           value={fromValue}
           format="YYYY-MM-DD"
+          shouldDisableDate={disabled}
           onChange={(newValue) => {
             onChange({
               from: newValue?.format("YYYY-MM-DD"),
@@ -40,6 +43,7 @@ export default function DateRangePicker({
           value={toValue}
           format="YYYY-MM-DD"
           minDate={fromValue ?? undefined}
+          shouldDisableDate={disabled}
           onChange={(newValue) =>
             onChange({
               ...value,

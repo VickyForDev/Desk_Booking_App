@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { BOOKING_API_BASE_URL } from "../settings/deskBookingAPI";
+import { BOOKING_API_BASE_URL } from "../api/deskBookingAPI";
 import type { Desk } from "../dataTypes/DeskTypes";
 import { Navigate } from "react-router";
 import { PATHS } from "./routes/paths";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DeskTwoToneIcon from "@mui/icons-material/DeskTwoTone";
 import { useQuery } from "@tanstack/react-query";
-import { BOOKING_API_BASE_URL } from "../settings/deskBookingAPI";
+import { BOOKING_API_BASE_URL } from "../api/deskBookingAPI";
 import type { User } from "../dataTypes/UserTypes";
 import { PATHS } from "./routes/paths";
 import { useNavigate } from "react-router-dom";

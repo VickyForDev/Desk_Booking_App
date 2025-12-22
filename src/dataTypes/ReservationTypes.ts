@@ -13,3 +13,9 @@ export type DeskReservation = {
   endDate: string;
   user: User;
 };
+
+export type ActiveReservation = {
+  id: number;
+  startDate: string;
+  endDate: string;
+};

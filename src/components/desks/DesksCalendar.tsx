@@ -53,6 +53,12 @@ function getDeskStatus(desk: Desk, date: string, currentUserId: number) {
   return { status: "open" };
 }
 
+function isInThePast(date: string) {
+  const today = dayjs().startOf("day");
+  const d = dayjs(date);
+  return d.isBefore(today);
+}
+
 const stickyHeader = {
   position: "sticky",
   fontWeight: "bold",
@@ -91,7 +97,13 @@ export default function DesksCalendar({
 }: DesksCalendarProps) {
   const dates = getDatesInRange(dateRange.from, dateRange.to);
   const [openReservationModal, setOpenReservationModal] = useState(false);
-  const [deskIdToReserve, setDeskIdToReserve] = useState<number | null>(null);
+  const [deskToReserve, setDeskToReserve] = useState<{
+    date: string | null;
+    deskId: number | null;
+  }>({
+    date: null,
+    deskId: null,
+  });
   const [openCancelationModal, setOpenCancelationModal] = useState(false);
   const [reservationToCancel, setReservationToCancel] = useState<{
     reservationId: number | null;
@@ -103,13 +115,13 @@ export default function DesksCalendar({
     deskId: null,
   });
 
-  function handleOpenReservationModal(deskId: number) {
-    setDeskIdToReserve(deskId);
+  function handleOpenReservationModal(deskId: number, date: string) {
+    setDeskToReserve({ deskId: deskId, date: date });
     setOpenReservationModal(true);
   }
 
   function handleCloseReservationModal() {
-    setDeskIdToReserve(null);
+    setDeskToReserve({ deskId: null, date: null });
     setOpenReservationModal(false);
   }
 
@@ -241,7 +253,10 @@ export default function DesksCalendar({
                             border: "none",
                             "&:hover": { backgroundColor: "green" },
                           }}
-                          onClick={() => handleOpenReservationModal(desk.id)}
+                          disabled={isInThePast(date)}
+                          onClick={() =>
+                            handleOpenReservationModal(desk.id, date)
+                          }
                         >
                           Reserve
                         </Button>
@@ -252,6 +267,7 @@ export default function DesksCalendar({
                           size="small"
                           color="error"
                           sx={{ fontSize: "0.7rem" }}
+                          disabled={isInThePast(date)}
                           onClick={() =>
                             handleOpenCancelationModal(
                               reservation.id,
@@ -277,11 +293,12 @@ export default function DesksCalendar({
           </TableBody>
         </Table>
       </TableContainer>
-      {openReservationModal && deskIdToReserve && (
+      {openReservationModal && deskToReserve.date && deskToReserve.deskId && (
         <ReservationDialog
           open={openReservationModal}
           handleClose={handleCloseReservationModal}
-          deskId={deskIdToReserve}
+          deskId={deskToReserve.deskId}
+          date={deskToReserve.date}
         />
       )}
       {openCancelationModal &&
